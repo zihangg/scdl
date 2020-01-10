@@ -542,7 +542,6 @@ def batch_download():
     batch = []
     i = 0
     j = 0
-    count = 0
     print('Please enter the link of the songs. To stop, press ENTER.')
     while 1:
         i += 1
@@ -553,11 +552,7 @@ def batch_download():
 
     print('{} songs detected.'.format(i-1))
 
-    for link in batch:
-        count += 1
-        item = get_item(link)
-        filename = get_filename(item)
-        print('Song {0}: {1}'.format(count, filename)) #print all songs in the list
+    display_songs(batch, count=0)
 
     count = 0
 
@@ -566,14 +561,7 @@ def batch_download():
             display_choices()
             choice = int(input(""))
             if choice == 1:
-                ans = str.casefold(input('Start downloading? (Y/N)'))
-                if ans == "y":
-                    for link in batch:
-                        parse_url(link)  # download all songs
-                    break
-                elif ans == "n":
-                    print('Process stopped.')
-                    sys.exit(0)
+                download_choice()
 
             if choice == 2:
                 ans = str.casefold(input('Would you like to add or remove songs? (A/R)'))
@@ -587,11 +575,7 @@ def batch_download():
                         batch.append(link)
 
                 elif ans == "r":
-                    for link in batch:
-                        count += 1
-                        item = get_item(link)
-                        filename = get_filename(item)
-                        print('Song {0}: {1}'.format(count, filename))
+                    display_songs(batch, count=0)
 
                     remove = str(input('Type in the track number(s) that you want to remove: '))
                     num_string = remove.strip(" ")
@@ -600,11 +584,8 @@ def batch_download():
                         j += 1
                         del batch[i-j]
 
-                    for link in batch: #make into function since redundant
-                        count += 1
-                        item = get_item(link)
-                        filename = get_filename(item)
-                        print('Song {0}: {1}'.format(count, filename))
+                    display_songs(batch, count=0)
+                    download_choice()
 
             if choice == 3:
                 print('Goodbye!')
@@ -615,6 +596,24 @@ def batch_download():
 
         except ValueError:
             print('\n Please enter a numerical value from 1-3.')
+
+
+def download_choice():
+    ans = str.casefold(input('Start downloading? (Y/N)'))
+    if ans == "y":
+        for link in batch:
+            parse_url(link)  # download all songs
+        break
+    elif ans == "n":
+        print('Process stopped.')
+        sys.exit(0)
+
+def display_songs(batch, count):
+    for link in batch:
+        count += 1
+        item = get_item(link)
+        filename = get_filename(item)
+        print('Song {0}: {1}'.format(count, filename))
 
 
 def display_choices():
