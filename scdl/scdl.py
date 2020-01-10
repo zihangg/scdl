@@ -598,7 +598,7 @@ def batch_download():
             print('\n Please enter a numerical value from 1-3.')
 
 
-def download_choice():
+def download_choice(batch):
     ans = str.casefold(input('Start downloading? (Y/N)'))
     if ans == "y":
         for link in batch:
