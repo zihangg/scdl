@@ -561,7 +561,7 @@ def batch_download():
             display_choices()
             choice = int(input(""))
             if choice == 1:
-                download_choice()
+                download_choice(batch)
 
             if choice == 2:
                 ans = str.casefold(input('Would you like to add or remove songs? (A/R)'))
@@ -585,7 +585,7 @@ def batch_download():
                         del batch[i-j]
 
                     display_songs(batch, count=0)
-                    download_choice()
+                    download_choice(batch)
 
             if choice == 3:
                 print('Goodbye!')
