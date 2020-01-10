@@ -531,9 +531,15 @@ def batch_download():
     Set URLs into a batch and downloads once all songs added by user
     """
     global arguments
+
+    if not arguments['--no-batch-folder']:
+        if not os.path.exists('Batch'):
+            os.makedirs('Batch')
+        os.chdir('Batch')
+
     batch = []
     i = 0
-    total = 0
+    count = 1
     print('Please enter the link of the songs. To stop, press ENTER.')
     while 1:
         i += 1
@@ -543,6 +549,9 @@ def batch_download():
         batch.append(link)
 
     print('{} songs detected.'.format(i-1))
+
+    for link in batch:
+        print('Song {0}: {1}'.format(count, get_filename(link))) #print all songs in the list
 
     ans = str.casefold(input('Start downloading? (Y/N)'))
     if ans == "y":
