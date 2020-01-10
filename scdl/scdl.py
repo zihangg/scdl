@@ -603,7 +603,6 @@ def download_choice():
     if ans == "y":
         for link in batch:
             parse_url(link)  # download all songs
-        break
     elif ans == "n":
         print('Process stopped.')
         sys.exit(0)
