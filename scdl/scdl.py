@@ -541,31 +541,88 @@ def batch_download():
 
     batch = []
     i = 0
-    count = 1
+    j = 0
+    count = 0
     print('Please enter the link of the songs. To stop, press ENTER.')
     while 1:
         i += 1
         link = input('Enter link of song %d: ' %i)
         if link == '':
             break
-        batch.append(link)
+        batch.append(link) #put all songs into array
 
     print('{} songs detected.'.format(i-1))
 
     for link in batch:
+        count += 1
         item = get_item(link)
         filename = get_filename(item)
         print('Song {0}: {1}'.format(count, filename)) #print all songs in the list
 
-    ans = str.casefold(input('Start downloading? (Y/N)'))
-    if ans == "y":
-        for link in batch:
-            parse_url(link)
-    elif ans == "n":
-        print('Process stopped.')
-        sys.exit(0)
+    while True:
+        try:
+            display_choices()
+            choice = int(input(""))
+            if choice == 1:
+                ans = str.casefold(input('Start downloading? (Y/N)'))
+                if ans == "y":
+                    for link in batch:
+                        parse_url(link)  # download all songs
+                    break
+                elif ans == "n":
+                    print('Process stopped.')
+                    sys.exit(0)
+
+            if choice == 2:
+                ans = str.casefold(input('Would you like to add or remove songs? (A/R)'))
+                if ans == "a":
+                    print('Please enter the link of the songs. To stop, press ENTER.')
+                    while 1: #make into function since redundant
+                        i += 1
+                        link = input('Enter link of song %d: ' % i)
+                        if link == '':
+                            break
+                        batch.append(link)
+
+                elif ans == "r":
+                    for link in batch:
+                        count += 1
+                        item = get_item(link)
+                        filename = get_filename(item)
+                        print('Song {0}: {1}'.format(count, filename))
+
+                    remove = int(input('Type in the track number(s) that you want to remove: '))
+                    num_string = remove.strip(" ")
+                    num = [int(a) for a in num_string]
+                    for i in num:
+                        j += 1
+                        del batch[i-j]
+
+                    for link in batch: #make into function since redundant
+                        count += 1
+                        item = get_item(link)
+                        filename = get_filename(item)
+                        print('Song {0}: {1}'.format(count, filename))
+
+            if choice == 3:
+                print('Goodbye!')
+                sys.exit(0)
+
+            else:
+                print('Invalid input. Please try again.')
+
+        except ValueError:
+            print('\n Please enter a numerical value from 1-3.')
 
 
+def display_choices():
+    print("---------------------------------------------------------------------------\n")
+    print("What would you like to do?\n")
+    print("---------------------------------------------------------------------------\n")
+    print("1. Continue to Download")
+    print("2. Edit Songs")
+    print("3. Quit")
+    print("---------------------------------------------------------------------------\n")
 
 
 def download_track(track, playlist_name=None, playlist_file=None):
