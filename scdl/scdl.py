@@ -12,7 +12,7 @@ Usage:
 [--hidewarnings][--debug | --error][--path <path>][--addtofile][--addtimestamp]
 [--onlymp3][--hide-progress][--min-size <size>][--max-size <size>][--remove]
 [--no-playlist-folder][--download-archive <file>][--extract-artist][--flac]
-    scdl -b
+    scdl -b [--no-batch-folder]
     scdl -h | --help
     scdl --version
 
@@ -46,6 +46,8 @@ Options:
     --min-size [min-size]       Skip tracks smaller than size (k/m/g)
     --no-playlist-folder        Download playlist tracks into main directory,
                                 instead of making a playlist subfolder
+    --no-batch-folder           Download songs into current directory instead
+                                of making new batch subfolder
     --onlymp3                   Download only the streamable mp3 file,
                                 even if track has a Downloadable file
     --path [path]               Use a custom path for downloaded files
