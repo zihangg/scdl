@@ -23,6 +23,7 @@ Options:
     -l [url]                    URL can be track/playlist/user
     -s                          Download the stream of a user (token needed)
     -a                          Download all tracks of user (including reposts)
+    -b                          Download songs in batch
     -t                          Download all uploads of a user (no reposts)
     -f                          Download all favorites of a user
     -C                          Download all commented by a user
@@ -177,6 +178,8 @@ def main():
 
     if arguments['-l']:
         parse_url(arguments['-l'])
+    elif arguments['-b']: #10/01/2020
+        batch_download()
     elif arguments['me']:
         if arguments['-f']:
             download(who_am_i(), 'favorites', 'likes')
@@ -216,19 +219,19 @@ def get_config():
         sys.exit()
 
 
-def get_item(track_url, client_id=CLIENT_ID):
+def get_item(track_url, client_id=CLIENT_ID): #FIRST FUNCTION
     """
     Fetches metadata for a track or playlist
     """
     try:
-        item_url = url['resolve'].format(track_url)
+        item_url = url['resolve'].format(track_url) #put track_url into API
 
-        r = requests.get(item_url, params={'client_id': client_id})
+        r = requests.get(item_url, params={'client_id': client_id})  #returns status code
         logger.debug(r.url)
         if r.status_code == 403:
             return get_item(track_url, ALT_CLIENT_ID)
 
-        item = r.json()
+        item = r.json() #converts the attributes of the request into json format
         no_tracks = item['kind'] == 'playlist' and not item['tracks']
         if no_tracks and client_id != ALT_CLIENT_ID:
             return get_item(track_url, ALT_CLIENT_ID)
@@ -244,10 +247,10 @@ def get_item(track_url, client_id=CLIENT_ID):
             logger.error('Could not resolve url {0}'.format(track_url))
             logger.exception(e)
             sys.exit(0)
-    return item
+    return item #return json of request.get()
 
 
-def parse_url(track_url):
+def parse_url(track_url): #sends the url to the appropriate function (track/playlist download)
     """
     Detects if a URL is a track or a playlist, and parses the track(s)
     to the track downloader
@@ -308,19 +311,19 @@ def remove_files():
             os.remove(f)
 
 
-def get_track_info(track_id):
+def get_track_info(track_id): #used in downloading songs
     """
     Fetches track info from Soundcloud, given a track_id
     """
     logger.info('Retrieving more info on the track')
     info_url = url["trackinfo"].format(track_id)
     r = requests.get(info_url, params={'client_id': CLIENT_ID}, stream=True)
-    item = r.json()
+    item = r.json() #get track info as a json
     logger.debug(item)
     return item
 
 
-def download(user, dl_type, name):
+def download(user, dl_type, name): #used only when downloading self related tracks
     """
     Download user items of dl_type (ie. all, playlists, liked, commented, etc.)
     """
@@ -329,10 +332,10 @@ def download(user, dl_type, name):
     logger.info(
         'Retrieving all {0} of user {1}...'.format(name, username)
     )
-    dl_url = url[dl_type].format(user_id)
+    dl_url = url[dl_type].format(user_id) #put user_id into url[dl_type] i.e. url['playlists']
     logger.debug(dl_url)
     resources = client.get_collection(dl_url, token)
-    del resources[:offset - 1]
+    del resources[:offset - 1] #del resources[0 to 0]?
     logger.debug(resources)
     total = len(resources)
     logger.info('Retrieved {0} {1}'.format(total, name))
@@ -377,9 +380,9 @@ def download_playlist(playlist):
         os.chdir(playlist_name)
 
     try:
-        with codecs.open(playlist_name + '.m3u', 'w+', 'utf8') as playlist_file:
+        with codecs.open(playlist_name + '.m3u', 'w+', 'utf8') as playlist_file: #w+ is overwriting file if file exists
             playlist_file.write('#EXTM3U' + os.linesep)
-            del playlist['tracks'][:offset - 1]
+            del playlist['tracks'][:offset - 1] #delete playlist['tracks'][0]?
             for counter, track_raw in enumerate(playlist['tracks'], offset):
                 logger.debug(track_raw)
                 logger.info('Track n°{0}'.format(counter))
@@ -522,13 +525,41 @@ def download_hls_mp3(track, title):
     )
     return filename
 
+def batch_download():
+    """
+    Set URLs into a batch and downloads once all songs added by user
+    """
+    global arguments
+    batch = []
+    i = 0
+    total = 0
+    print('Please enter the link of the songs. To stop, press ENTER.')
+    while 1:
+        i += 1
+        link = input('Enter link of song %d: ' %i)
+        if link == '':
+            break
+        batch.append(link)
+
+    print('{} songs detected.'.format(i-1))
+
+    ans = str.casefold(input('Start downloading? (Y/N)'))
+    if ans == "y":
+        for link in batch:
+            parse_url(link)
+    elif ans == "n":
+        print('Process stopped.')
+        sys.exit(0)
+
+
+
 
 def download_track(track, playlist_name=None, playlist_file=None):
     """
     Downloads a track
     """
     global arguments
-    track = get_track_info(track['id'])
+    track = get_track_info(track['id']) #track info is a json returned from the function
     title = track['title']
     title = title.encode('utf-8', 'ignore').decode('utf8')
     logger.info('Downloading {0}'.format(title))
