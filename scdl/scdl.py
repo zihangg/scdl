@@ -553,7 +553,9 @@ def batch_download():
     print('{} songs detected.'.format(i-1))
 
     for link in batch:
-        print('Song {0}: {1}'.format(count, get_filename(link))) #print all songs in the list
+        item = get_item(link)
+        filename = get_filename(item)
+        print('Song {0}: {1}'.format(count, filename)) #print all songs in the list
 
     ans = str.casefold(input('Start downloading? (Y/N)'))
     if ans == "y":
