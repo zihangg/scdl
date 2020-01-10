@@ -12,6 +12,7 @@ Usage:
 [--hidewarnings][--debug | --error][--path <path>][--addtofile][--addtimestamp]
 [--onlymp3][--hide-progress][--min-size <size>][--max-size <size>][--remove]
 [--no-playlist-folder][--download-archive <file>][--extract-artist][--flac]
+    scdl -b
     scdl -h | --help
     scdl --version
 
