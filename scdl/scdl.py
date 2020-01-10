@@ -559,6 +559,8 @@ def batch_download():
         filename = get_filename(item)
         print('Song {0}: {1}'.format(count, filename)) #print all songs in the list
 
+    count = 0
+
     while True:
         try:
             display_choices()
@@ -591,7 +593,7 @@ def batch_download():
                         filename = get_filename(item)
                         print('Song {0}: {1}'.format(count, filename))
 
-                    remove = int(input('Type in the track number(s) that you want to remove: '))
+                    remove = str(input('Type in the track number(s) that you want to remove: '))
                     num_string = remove.strip(" ")
                     num = [int(a) for a in num_string]
                     for i in num:
