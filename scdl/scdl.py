@@ -562,17 +562,22 @@ def batch_download():
             choice = int(input(""))
             if choice == 1:
                 download_choice(batch)
+                break
 
-            if choice == 2:
+            elif choice == 2:
                 ans = str.casefold(input('Would you like to add or remove songs? (A/R)'))
                 if ans == "a":
                     print('Please enter the link of the songs. To stop, press ENTER.')
                     while 1: #make into function since redundant
+                        i-1
                         i += 1
                         link = input('Enter link of song %d: ' % i)
                         if link == '':
                             break
                         batch.append(link)
+
+                    display_songs(batch, count=0)
+                    download_choice(batch)
 
                 elif ans == "r":
                     display_songs(batch, count=0)
@@ -587,7 +592,7 @@ def batch_download():
                     display_songs(batch, count=0)
                     download_choice(batch)
 
-            if choice == 3:
+            elif choice == 3:
                 print('Goodbye!')
                 sys.exit(0)
 
@@ -604,8 +609,7 @@ def download_choice(batch):
         for link in batch:
             parse_url(link)  # download all songs
     elif ans == "n":
-        print('Process stopped.')
-        sys.exit(0)
+        print('Redirecting to Menu.')
 
 def display_songs(batch, count):
     for link in batch:
