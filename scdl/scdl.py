@@ -517,7 +517,6 @@ def download_hls_mp3(track, title): #download mp3 version of files
 
     filename = get_filename(track)
     logger.debug("filename : {0}".format(filename))
-    logger.info('Using download_hls_mp3 function.')
 
     # Skip if file ID or filename already exists
     if already_downloaded(track, title, filename):
@@ -526,38 +525,36 @@ def download_hls_mp3(track, title): #download mp3 version of files
     # Get the requests stream
     url = get_track_m3u8(track)
 
-    if arguments['--start'] or arguments['--end'] is not None:
-        if arguments['--start'] is not None:
-            start = str(arguments['--start'])
-            os.system(
-                "ffmpeg -i {0} -ss {1} -c copy {2} -loglevel fatal".format(
-                    shlex.quote(url),
-                    start,
-                    shlex.quote(filename)
-                )
+    if arguments['--start'] is not None:
+        start = arguments.get('--start')
+        os.system(
+            "ffmpeg -i {0} -ss {1} -c copy {2} -loglevel fatal".format(
+                shlex.quote(url),
+                start,
+                shlex.quote(filename)
             )
+        )
 
-        elif arguments['--end'] is not None:
-            end = str(arguments['--end'])
-            os.system(
-                "ffmpeg -i {0} -to {1} -c copy {2} -loglevel fatal".format(
-                    shlex.quote(url),
-                    end,
-                    shlex.quote(filename)
-                )
+    elif arguments['--end'] is not None:
+        end = arguments.get('--end')
+        os.system(
+            "ffmpeg -i {0} -to {1} -c copy {2} -loglevel fatal".format(
+                shlex.quote(url),
+                end,
+                shlex.quote(filename)
             )
-
-        else:
-            start = str(arguments['--start'])
-            end = str(arguments['--end'])
-            os.system(
-                "ffmpeg -i {0} -ss {1} -to {2} -c copy {2} -loglevel fatal".format(
-                    shlex.quote(url),
-                    start,
-                    end,
-                    shlex.quote(filename)
-                )
+        )
+    elif arguments['--start'] and arguments['--end'] is not None:
+        start = arguments.get('--start')
+        end = arguments.get('--end')
+        os.system(
+            "ffmpeg -i {0} -ss {1} -to {2} -c copy {2} -loglevel fatal".format(
+                shlex.quote(url),
+                start,
+                end,
+                shlex.quote(filename)
             )
+        )
     else:
         os.system(
             "ffmpeg -i {0} -c copy {1} -loglevel fatal".format(
