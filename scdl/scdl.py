@@ -704,21 +704,20 @@ def download_track(track, playlist_name=None, playlist_file=None):
     if arguments['--remove']:
         fileToKeep.append(filename)
 
-    if not arguments['--start'] and not arguments['--end']:
-        if filename.endswith('.mp3') or filename.endswith('.flac'):
-            try:
-                set_metadata(track, filename, playlist_name)
-            except Exception as e:
-                logger.error('Error trying to set the tags...')
-                logger.debug(e)
-        else:
-            logger.error("This type of audio doesn't support tagging...")
+    if filename.endswith('.mp3') or filename.endswith('.flac'):
+        try:
+            set_metadata(track, filename, playlist_name)
+        except Exception as e:
+            logger.error('Error trying to set the tags...')
+            logger.debug(e)
+    else:
+        logger.error("This type of audio doesn't support tagging...")
 
     # Try to change the real creation date
-        created_at = track['created_at']
-        timestamp = datetime.strptime(created_at, '%Y-%m-%dT%H:%M:%SZ')
-        filetime = int(time.mktime(timestamp.timetuple()))
-        try_utime(filename, filetime)
+    created_at = track['created_at']
+    timestamp = datetime.strptime(created_at, '%Y-%m-%dT%H:%M:%SZ')
+    filetime = int(time.mktime(timestamp.timetuple()))
+    try_utime(filename, filetime)
 
     logger.info('{0} Downloaded.\n'.format(filename))
     record_download_archive(track)
