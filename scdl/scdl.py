@@ -396,9 +396,8 @@ def download_playlist(playlist):
             for counter, track_raw in enumerate(playlist['tracks'], offset):
                 logger.debug(track_raw)
                 logger.info('Track n°{0}: {1}'.format(counter, get_filename(track_raw)))
-                #download_track(track_raw, playlist['title'], playlist_file)
 
-            edit = str.casefold(input('Would you like to delete tracks? (Y/N)'))
+            edit = str.casefold(input('Would you like to delete tracks? (Y/N)\n'))
             if edit == "y":
                 remove = str(input('Type in the track number(s) that you want to remove: '))
                 num_string = remove.split(" ")
@@ -411,7 +410,7 @@ def download_playlist(playlist):
                     logger.debug(track_raw)
                     logger.info('Track n°{0}: {1}'.format(counter, get_filename(track_raw)))
 
-                ans = str.casefold(input('Continue to download? (Y/N)'))
+                ans = str.casefold(input('Continue to download? (Y/N)\n'))
                 if ans == "y":
                     for track_raw in playlist['tracks']:
                         download_track(track_raw, playlist['title'], playlist_file)
@@ -423,7 +422,7 @@ def download_playlist(playlist):
                     logger.warn('Incorrect input.')
 
             elif edit == "n":
-                ans = str.casefold(input('Continue to download? (Y/N)'))
+                ans = str.casefold(input('Continue to download? (Y/N)\n'))
                 if ans == "y":
                     for track_raw in playlist['tracks']:
                         download_track(track_raw, playlist['title'], playlist_file)
@@ -641,7 +640,6 @@ def batch_download(batch):
 
     display_songs(batch, count=0)
 
-    count = 0
 
     while True:
         try:
@@ -653,7 +651,7 @@ def batch_download(batch):
             elif choice == 2:
                 ans = str.casefold(input('Would you like to add or remove songs? (A/R)\n'))
                 if ans == "a":
-                    logger.info('Please enter the link of the songs. To stop, press ENTER.')
+                    logger.info('\nPlease enter the link of the songs. To stop, press ENTER.\n')
                     ctr = ctr - 1
                     while 1: #make into function since redundant
                         ctr += 1
@@ -662,6 +660,7 @@ def batch_download(batch):
                             break
                         batch.append(link)
 
+                    logger.info('\n{} songs detected.\n'.format(ctr - 1))
                     display_songs(batch, count=0)
                     download_choice(batch)
 
