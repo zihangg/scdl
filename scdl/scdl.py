@@ -188,7 +188,7 @@ def main():
     if arguments['-l']:
         parse_url(arguments['-l'])
     elif arguments['-b']: #10/01/2020
-        batch_download()
+        get_batch()
     elif arguments['me']:
         if arguments['-f']:
             download(who_am_i(), 'favorites', 'likes')
@@ -383,6 +383,7 @@ def download_playlist(playlist):
     playlist_name = playlist_name.decode('utf8')
     playlist_name = ''.join(c for c in playlist_name if c not in invalid_chars)
     batch = []
+    j = 0
 
     if not arguments['--no-playlist-folder']:
         if not os.path.exists(playlist_name):
@@ -399,7 +400,26 @@ def download_playlist(playlist):
                 logger.info('Track n°{0}: {1}'.format(counter, get_filename(track_raw)))
                 #download_track(track_raw, playlist['title'], playlist_file)
 
-        batch_download(batch)
+            edit = str.casefold(input('Would you like to delete tracks? (Y/N)'))
+            if edit == "y":
+                remove = str(input('Type in the track number(s) that you want to remove: '))
+                num_string = remove.split(" ")
+                num = [int(a) for a in num_string]
+                for i in num:
+                    j += 1
+                    del batch[i - j]
+
+            elif edit == "n":
+                ans = str.casefold(input('Continue to download? (Y/N)'))
+                if ans == "y":
+                    for track in batch:
+                        download_track(track, playlist['title'], playlist_file)
+
+                elif ans == "n":
+                    sys.exit(0)
+
+                else:
+                    logger.warn('Incorrect input.')
 
     finally:
         if not arguments['--no-playlist-folder']:
