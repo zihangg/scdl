@@ -513,6 +513,8 @@ def get_track_m3u8(track):
 
 
 def download_hls_mp3(track, title): #download mp3 version of files
+    global arguments
+
     filename = get_filename(track)
     logger.debug("filename : {0}".format(filename))
 
