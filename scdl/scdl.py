@@ -409,6 +409,17 @@ def download_playlist(playlist):
                     j += 1
                     del batch[i - j]
 
+                ans = str.casefold(input('Continue to download? (Y/N)'))
+                if ans == "y":
+                    for track in batch:
+                        download_track(track, playlist['title'], playlist_file)
+
+                elif ans == "n":
+                    sys.exit(0)
+
+                else:
+                    logger.warn('Incorrect input.')
+
             elif edit == "n":
                 ans = str.casefold(input('Continue to download? (Y/N)'))
                 if ans == "y":
