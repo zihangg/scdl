@@ -392,8 +392,9 @@ def download_playlist(playlist):
             playlist_file.write('#EXTM3U' + os.linesep)
             del playlist['tracks'][:offset - 1] #delete playlist['tracks'][0]?
             for counter, track_raw in enumerate(playlist['tracks'], offset):
+                item = get_item(track_raw)
                 logger.debug(track_raw)
-                logger.info('Track n°{0}: {1}'.format(counter, get_filename(get_item(track_raw))))
+                logger.info('Track n°{0}: {1}'.format(counter, get_filename(item)))
                 #download_track(track_raw, playlist['title'], playlist_file)
 
 
