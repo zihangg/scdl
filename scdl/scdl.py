@@ -546,9 +546,11 @@ def download_hls_mp3(track, title): #download mp3 version of files
                 shlex.quote(filename)
             )
         )
-    elif arguments['--start'] and arguments['--end']:
+    elif arguments['--start'] is not None and arguments['--end'] is not None:
         start = arguments.get('--start')
         end = arguments.get('--end')
+        logger.info(start)
+        logger.info(end)
         os.system(
             "ffmpeg -i {0} -ss {1} -to {2} -c copy {2} -loglevel fatal".format(
                 shlex.quote(url),
