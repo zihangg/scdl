@@ -402,11 +402,9 @@ def download_playlist(playlist):
                 remove = str(input('\nType in the track number(s) that you want to remove: '))
                 num_string = remove.split(" ")
                 num = [int(a) for a in num_string]
+                num.sort()
                 for i in num:
-                    if num[i] > num[i+1]:
-                        j = j
-                    elif num[i] < num[i+1]:
-                        j += 1
+                    j += 1
                     del playlist['tracks'][i - j]
 
                 logger.info("\n")
@@ -674,6 +672,7 @@ def batch_download(batch):
                     remove = str(input('\nType in the track number(s) that you want to remove: '))
                     num_string = remove.split(" ")
                     num = [int(a) for a in num_string]
+                    num.sort()
                     for i in num:
                         j += 1
                         del batch[i-j]
