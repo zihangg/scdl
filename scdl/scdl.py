@@ -397,20 +397,21 @@ def download_playlist(playlist):
                 logger.debug(track_raw)
                 logger.info('Track n°{0}: {1}'.format(counter, get_filename(track_raw)))
 
-            edit = str.casefold(input('Would you like to delete tracks? (Y/N)\n'))
+            edit = str.casefold(input('\nWould you like to delete tracks? (Y/N)\n'))
             if edit == "y":
-                remove = str(input('Type in the track number(s) that you want to remove: '))
+                remove = str(input('\nType in the track number(s) that you want to remove: '))
                 num_string = remove.split(" ")
                 num = [int(a) for a in num_string]
                 for i in num:
                     j += 1
                     del playlist['tracks'][i - j]
 
+                logger.info("\n")
                 for counter, track_raw in enumerate(playlist['tracks'], offset):
                     logger.debug(track_raw)
                     logger.info('Track n°{0}: {1}'.format(counter, get_filename(track_raw)))
 
-                ans = str.casefold(input('Continue to download? (Y/N)\n'))
+                ans = str.casefold(input('\nContinue to download? (Y/N)\n'))
                 if ans == "y":
                     for track_raw in playlist['tracks']:
                         download_track(track_raw, playlist['title'], playlist_file)
@@ -422,7 +423,7 @@ def download_playlist(playlist):
                     logger.warn('Incorrect input.')
 
             elif edit == "n":
-                ans = str.casefold(input('Continue to download? (Y/N)\n'))
+                ans = str.casefold(input('\nContinue to download? (Y/N)\n'))
                 if ans == "y":
                     for track_raw in playlist['tracks']:
                         download_track(track_raw, playlist['title'], playlist_file)
@@ -667,13 +668,14 @@ def batch_download(batch):
                 elif ans == "r":
                     display_songs(batch, count=0)
 
-                    remove = str(input('Type in the track number(s) that you want to remove: '))
+                    remove = str(input('\nType in the track number(s) that you want to remove: '))
                     num_string = remove.split(" ")
                     num = [int(a) for a in num_string]
                     for i in num:
                         j += 1
                         del batch[i-j]
 
+                    logger.info('\n{} songs detected.\n'.format(ctr - 1))
                     display_songs(batch, count=0)
                     download_choice(batch)
 
