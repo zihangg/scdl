@@ -527,7 +527,7 @@ def download_hls_mp3(track, title): #download mp3 version of files
     # Get the requests stream
     url = get_track_m3u8(track)
 
-    if arguments['--start']:
+    if arguments['--start'] is not None and arguments['--end'] is None:
         start = arguments.get('--start')
         os.system(
             "ffmpeg -i {0} -ss {1} -c copy {2} -loglevel fatal".format(
@@ -537,7 +537,7 @@ def download_hls_mp3(track, title): #download mp3 version of files
             )
         )
 
-    elif arguments['--end']:
+    elif arguments['--end'] is not None and arguments['--start'] is None:
         end = arguments.get('--end')
         os.system(
             "ffmpeg -i {0} -to {1} -c copy {2} -loglevel fatal".format(
