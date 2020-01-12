@@ -517,6 +517,7 @@ def download_hls_mp3(track, title): #download mp3 version of files
 
     filename = get_filename(track)
     logger.debug("filename : {0}".format(filename))
+    logger.info('Using download_hls_mp3 function.')
 
     # Skip if file ID or filename already exists
     if already_downloaded(track, title, filename):
