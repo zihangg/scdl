@@ -413,8 +413,8 @@ def download_playlist(playlist):
 
                 ans = str.casefold(input('Continue to download? (Y/N)'))
                 if ans == "y":
-                    for track in batch:
-                        download_track(track, playlist['title'], playlist_file)
+                    for track_raw in playlist['tracks']:
+                        download_track(track_raw, playlist['title'], playlist_file)
 
                 elif ans == "n":
                     sys.exit(0)
@@ -425,8 +425,8 @@ def download_playlist(playlist):
             elif edit == "n":
                 ans = str.casefold(input('Continue to download? (Y/N)'))
                 if ans == "y":
-                    for track in batch:
-                        download_track(track, playlist['title'], playlist_file)
+                    for track_raw in playlist['tracks']:
+                        download_track(track_raw, playlist['title'], playlist_file)
 
                 elif ans == "n":
                     sys.exit(0)
