@@ -7,11 +7,13 @@ Usage:
     scdl -l <track_url> [-a | -f | -C | -t | -p][-c][-o <offset>]\
 [--hidewarnings][--debug | --error][--path <path>][--addtofile][--addtimestamp]
 [--onlymp3][--hide-progress][--min-size <size>][--max-size <size>][--remove]
-[--no-playlist-folder][--download-archive <file>][--extract-artist][--flac][--start <time>][--end <time>]
+[--no-playlist-folder][--download-archive <file>][--extract-artist][--flac]
+[--start <time>][--end <time>]
     scdl me (-s | -a | -f | -t | -p | -m)[-c][-o <offset>]\
 [--hidewarnings][--debug | --error][--path <path>][--addtofile][--addtimestamp]
 [--onlymp3][--hide-progress][--min-size <size>][--max-size <size>][--remove]
-[--no-playlist-folder][--download-archive <file>][--extract-artist][--flac][--start <time>][--end <time>]
+[--no-playlist-folder][--download-archive <file>][--extract-artist][--flac]
+[--start <time>][--end <time>]
     scdl -b [--no-batch-folder]
     scdl -h | --help
     scdl --version
@@ -525,7 +527,7 @@ def download_hls_mp3(track, title): #download mp3 version of files
     # Get the requests stream
     url = get_track_m3u8(track)
 
-    if arguments['--start'] is not None:
+    if arguments['--start']:
         start = arguments.get('--start')
         os.system(
             "ffmpeg -i {0} -ss {1} -c copy {2} -loglevel fatal".format(
@@ -535,7 +537,7 @@ def download_hls_mp3(track, title): #download mp3 version of files
             )
         )
 
-    elif arguments['--end'] is not None:
+    elif arguments['--end']:
         end = arguments.get('--end')
         os.system(
             "ffmpeg -i {0} -to {1} -c copy {2} -loglevel fatal".format(
@@ -544,7 +546,7 @@ def download_hls_mp3(track, title): #download mp3 version of files
                 shlex.quote(filename)
             )
         )
-    elif arguments['--start'] and arguments['--end'] is not None:
+    elif arguments['--start'] and arguments['--end']:
         start = arguments.get('--start')
         end = arguments.get('--end')
         os.system(
@@ -556,6 +558,7 @@ def download_hls_mp3(track, title): #download mp3 version of files
             )
         )
     else:
+        logger.info('start and end not defined.')
         os.system(
             "ffmpeg -i {0} -c copy {1} -loglevel fatal".format(
                 shlex.quote(url),
@@ -696,6 +699,7 @@ def download_track(track, playlist_name=None, playlist_file=None):
                 duration, title, filename, os.linesep
             )
         )
+
 
     if arguments['--remove']:
         fileToKeep.append(filename)
