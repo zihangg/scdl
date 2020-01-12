@@ -382,7 +382,6 @@ def download_playlist(playlist):
     playlist_name = playlist['title'].encode('utf-8', 'ignore')
     playlist_name = playlist_name.decode('utf8')
     playlist_name = ''.join(c for c in playlist_name if c not in invalid_chars)
-    batch = []
     j = 0
 
     if not arguments['--no-playlist-folder']:
@@ -406,7 +405,8 @@ def download_playlist(playlist):
                 num_string = remove.split(" ")
                 num = [int(a) for a in num_string]
                 for i in num:
-                    del playlist['tracks'][i]
+                    j += 1
+                    del playlist['tracks'][i - j]
 
                 for counter, track_raw in enumerate(playlist['tracks'], offset):
                     logger.debug(track_raw)
@@ -434,6 +434,9 @@ def download_playlist(playlist):
 
                 else:
                     logger.warn('Incorrect input.')
+
+            else:
+                logger.warn('Incorrect Input.')
 
     finally:
         if not arguments['--no-playlist-folder']:
