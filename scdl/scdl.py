@@ -558,7 +558,6 @@ def download_hls_mp3(track, title): #download mp3 version of files
             )
         )
     else:
-        logger.info('start and end not defined.')
         os.system(
             "ffmpeg -i {0} -c copy {1} -loglevel fatal".format(
                 shlex.quote(url),
@@ -582,7 +581,7 @@ def batch_download():
     batch = []
     i = 0
     j = 0
-    print('Please enter the link of the songs. To stop, press ENTER.')
+    logger.info('Please enter the link of the songs. To stop, press ENTER.')
     while 1:
         i += 1
         link = input('Enter link of song %d: ' %i)
@@ -590,7 +589,7 @@ def batch_download():
             break
         batch.append(link) #put all songs into array
 
-    print('{} songs detected.'.format(i-1))
+    logger.info('\n{} songs detected.\n'.format(i-1))
 
     display_songs(batch, count=0)
 
@@ -606,7 +605,7 @@ def batch_download():
             elif choice == 2:
                 ans = str.casefold(input('Would you like to add or remove songs? (A/R)\n'))
                 if ans == "a":
-                    print('Please enter the link of the songs. To stop, press ENTER.')
+                    logger.info('Please enter the link of the songs. To stop, press ENTER.')
                     i = i - 1
                     while 1: #make into function since redundant
                         i += 1
@@ -632,14 +631,14 @@ def batch_download():
                     download_choice(batch)
 
             elif choice == 3:
-                print('Goodbye!')
+                logger.info('Goodbye!')
                 sys.exit(0)
 
             else:
-                print('Invalid input. Please try again.\n')
+                logger.info('Invalid input. Please try again.\n')
 
         except ValueError:
-            print('\n Please enter a numerical value from 1-3.\n')
+            logger.info('\n Please enter a numerical value from 1-3.\n')
 
 
 def download_choice(batch):
@@ -647,19 +646,20 @@ def download_choice(batch):
     if ans == "y":
         for link in batch:
             parse_url(link)  # download all songs
+        sys.exit(0)
     elif ans == "n":
-        print('Redirecting to Menu.\n')
+        logger.info('Redirecting to Menu.\n')
 
 def display_songs(batch, count):
     for link in batch:
         count += 1
         item = get_item(link)
         filename = get_filename(item)
-        print('Song {0}: {1}'.format(count, filename))
+        logger.info('Song {0}: {1}'.format(count, filename))
 
 
 def display_choices():
-    print("---------------------------------------------------------------------------\n")
+    print("\n---------------------------------------------------------------------------\n")
     print("What would you like to do?\n")
     print("---------------------------------------------------------------------------\n")
     print("1. Continue to Download")
