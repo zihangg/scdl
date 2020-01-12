@@ -406,8 +406,11 @@ def download_playlist(playlist):
                 num_string = remove.split(" ")
                 num = [int(a) for a in num_string]
                 for i in num:
-                    j += 1
-                    del batch[i - j]
+                    del playlist['tracks'][i]
+
+                for counter, track_raw in enumerate(playlist['tracks'], offset):
+                    logger.debug(track_raw)
+                    logger.info('Track n°{0}: {1}'.format(counter, get_filename(track_raw)))
 
                 ans = str.casefold(input('Continue to download? (Y/N)'))
                 if ans == "y":
