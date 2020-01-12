@@ -7,11 +7,11 @@ Usage:
     scdl -l <track_url> [-a | -f | -C | -t | -p][-c][-o <offset>]\
 [--hidewarnings][--debug | --error][--path <path>][--addtofile][--addtimestamp]
 [--onlymp3][--hide-progress][--min-size <size>][--max-size <size>][--remove]
-[--no-playlist-folder][--download-archive <file>][--extract-artist][--flac]
+[--no-playlist-folder][--download-archive <file>][--extract-artist][--flac][--start <time>][--end <time>]
     scdl me (-s | -a | -f | -t | -p | -m)[-c][-o <offset>]\
 [--hidewarnings][--debug | --error][--path <path>][--addtofile][--addtimestamp]
 [--onlymp3][--hide-progress][--min-size <size>][--max-size <size>][--remove]
-[--no-playlist-folder][--download-archive <file>][--extract-artist][--flac]
+[--no-playlist-folder][--download-archive <file>][--extract-artist][--flac][--start <time>][--end <time>]
     scdl -b [--no-batch-folder]
     scdl -h | --help
     scdl --version
@@ -44,6 +44,8 @@ Options:
     --hidewarnings              Hide Warnings. (use with precaution)
     --max-size [max-size]       Skip tracks larger than size (k/m/g)
     --min-size [min-size]       Skip tracks smaller than size (k/m/g)
+    --start [time]              Trim at start time (hh:mm:ss)
+    --end [time]                Trim at end time (hh:mm:ss)
     --no-playlist-folder        Download playlist tracks into main directory,
                                 instead of making a playlist subfolder
     --no-batch-folder           Download songs into current directory instead
@@ -438,7 +440,7 @@ def get_filename(track, original_filename=None):
     return filename
 
 
-def download_original_file(track, title):
+def download_original_file(track, title): #for original tracks (if it is downloadable in soundcloud)
     logger.info('Downloading the original file.')
     original_url = track['download_url']
 
@@ -510,7 +512,7 @@ def get_track_m3u8(track):
         return r.json()['url']
 
 
-def download_hls_mp3(track, title):
+def download_hls_mp3(track, title): #download mp3 version of files
     filename = get_filename(track)
     logger.debug("filename : {0}".format(filename))
 
@@ -520,12 +522,47 @@ def download_hls_mp3(track, title):
 
     # Get the requests stream
     url = get_track_m3u8(track)
-    os.system(
-        "ffmpeg -i {0} -c copy {1} -loglevel fatal".format(
-            shlex.quote(url),
-            shlex.quote(filename)
+
+    if arguments['--start'] or arguments['--end'] is not None:
+        if arguments['--start'] is not None:
+            start = str(arguments['--start'])
+            os.system(
+                "ffmpeg -i {0} -ss {1} -c copy {2} -loglevel fatal".format(
+                    shlex.quote(url),
+                    start,
+                    shlex.quote(filename)
+                )
+            )
+
+        elif arguments['--end'] is not None:
+            end = str(arguments['--end'])
+            os.system(
+                "ffmpeg -i {0} -to {1} -c copy {2} -loglevel fatal".format(
+                    shlex.quote(url),
+                    end,
+                    shlex.quote(filename)
+                )
+            )
+
+        else:
+            start = str(arguments['--start'])
+            end = str(arguments['--end'])
+            os.system(
+                "ffmpeg -i {0} -ss {1} -to {2} -c copy {2} -loglevel fatal".format(
+                    shlex.quote(url),
+                    start,
+                    end,
+                    shlex.quote(filename)
+                )
+            )
+    else:
+        os.system(
+            "ffmpeg -i {0} -c copy {1} -loglevel fatal".format(
+                shlex.quote(url),
+                shlex.quote(filename)
+            )
         )
-    )
+
     return filename
 
 def batch_download():
@@ -564,11 +601,11 @@ def batch_download():
                 download_choice(batch)
 
             elif choice == 2:
-                ans = str.casefold(input('Would you like to add or remove songs? (A/R)'))
+                ans = str.casefold(input('Would you like to add or remove songs? (A/R)\n'))
                 if ans == "a":
                     print('Please enter the link of the songs. To stop, press ENTER.')
+                    i = i - 1
                     while 1: #make into function since redundant
-                        i = i-1
                         i += 1
                         link = input('Enter link of song %d: ' % i)
                         if link == '':
@@ -596,19 +633,19 @@ def batch_download():
                 sys.exit(0)
 
             else:
-                print('Invalid input. Please try again.')
+                print('Invalid input. Please try again.\n')
 
         except ValueError:
-            print('\n Please enter a numerical value from 1-3.')
+            print('\n Please enter a numerical value from 1-3.\n')
 
 
 def download_choice(batch):
-    ans = str.casefold(input('Start downloading? (Y/N)'))
+    ans = str.casefold(input('Start downloading? (Y/N)\n'))
     if ans == "y":
         for link in batch:
             parse_url(link)  # download all songs
     elif ans == "n":
-        print('Redirecting to Menu.')
+        print('Redirecting to Menu.\n')
 
 def display_songs(batch, count):
     for link in batch:
