@@ -93,6 +93,7 @@ arguments = None
 token = ''
 path = ''
 offset = 1
+ctr = 0
 
 url = {
     'playlists-liked': ('https://api-v2.soundcloud.com/users/{0}/playlists'
@@ -123,6 +124,7 @@ def main():
     signal.signal(signal.SIGINT, signal_handler)
     global offset
     global arguments
+    global ctr
 
     # Parse argument
     arguments = docopt(__doc__, version=__version__)
@@ -393,9 +395,11 @@ def download_playlist(playlist):
             del playlist['tracks'][:offset - 1] #delete playlist['tracks'][0]?
             for counter, track_raw in enumerate(playlist['tracks'], offset):
                 logger.debug(track_raw)
+                batch.append(track_raw)
                 logger.info('Track n°{0}: {1}'.format(counter, get_filename(track_raw)))
                 #download_track(track_raw, playlist['title'], playlist_file)
 
+        batch_download(batch)
 
     finally:
         if not arguments['--no-playlist-folder']:
@@ -570,29 +574,34 @@ def download_hls_mp3(track, title): #download mp3 version of files
 
     return filename
 
-def batch_download():
+def get_batch():
+    global ctr
+    batch = []
+    logger.info('Please enter the link of the songs. To stop, press ENTER.')
+    while 1:
+        ctr += 1
+        link = input('Enter link of song %d: ' %ctr)
+        if link == '':
+            break
+        batch.append(link)
+
+    logger.info('\n{} songs detected.\n'.format(ctr-1))
+
+    batch_download(batch)
+
+def batch_download(batch):
     """
     Set URLs into a batch and downloads once all songs added by user
     """
     global arguments
+    global ctr
 
     if not arguments['--no-batch-folder']:
         if not os.path.exists('Batch'):
             os.makedirs('Batch')
         os.chdir('Batch')
 
-    batch = []
-    i = 0
     j = 0
-    logger.info('Please enter the link of the songs. To stop, press ENTER.')
-    while 1:
-        i += 1
-        link = input('Enter link of song %d: ' %i)
-        if link == '':
-            break
-        batch.append(link) #put all songs into array
-
-    logger.info('\n{} songs detected.\n'.format(i-1))
 
     display_songs(batch, count=0)
 
@@ -609,10 +618,10 @@ def batch_download():
                 ans = str.casefold(input('Would you like to add or remove songs? (A/R)\n'))
                 if ans == "a":
                     logger.info('Please enter the link of the songs. To stop, press ENTER.')
-                    i = i - 1
+                    ctr = ctr - 1
                     while 1: #make into function since redundant
-                        i += 1
-                        link = input('Enter link of song %d: ' % i)
+                        ctr += 1
+                        link = input('Enter link of song %d: ' % ctr)
                         if link == '':
                             break
                         batch.append(link)
