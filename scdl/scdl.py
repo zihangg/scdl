@@ -270,13 +270,13 @@ def parse_url(track_url): #sends the url to the appropriate function (track/play
     if not item:
         return
     elif item['kind'] == 'track':
-        logger.info('Found a track')
+        logger.info('\nFound a track')
         download_track(item)
     elif item['kind'] == 'playlist':
-        logger.info('Found a playlist')
+        logger.info('\nFound a playlist')
         download_playlist(item)
     elif item['kind'] == 'user':
-        logger.info('Found a user profile')
+        logger.info('\nFound a user profile')
         if arguments['-f']:
             download(item, 'favorites', 'likes')
         elif arguments['-C']:
@@ -403,7 +403,10 @@ def download_playlist(playlist):
                 num_string = remove.split(" ")
                 num = [int(a) for a in num_string]
                 for i in num:
-                    j += 1
+                    if num[i] > num[i+1]:
+                        j = j
+                    elif num[i] < num[i+1]:
+                        j += 1
                     del playlist['tracks'][i - j]
 
                 logger.info("\n")
