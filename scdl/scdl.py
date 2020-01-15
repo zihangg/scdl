@@ -259,7 +259,7 @@ def get_item(track_url, client_id=CLIENT_ID): #FIRST FUNCTION
     return item #return json of request.get()
 
 
-def parse_url(track_url): #sends the url to the appropriate function (track/playlist download)
+def parse_url(track_url):
     """
     Detects if a URL is a track or a playlist, and parses the track(s)
     to the track downloader
