@@ -574,7 +574,7 @@ def download_hls_mp3(track, title): #download mp3 version of files
     if arguments['--start'] is not None and arguments['--end'] is None:
         start = arguments.get('--start')
         os.system(
-            "ffmpeg -i {0} -ss {1} -c copy {2} -loglevel fatal".format(
+            "ffpb -i {0} -ss {1} -c copy {2} -loglevel fatal".format(
                 shlex.quote(url),
                 start,
                 shlex.quote(filename)
@@ -584,7 +584,7 @@ def download_hls_mp3(track, title): #download mp3 version of files
     elif arguments['--end'] is not None and arguments['--start'] is None:
         end = arguments.get('--end')
         os.system(
-            "ffmpeg -i {0} -to {1} -c copy {2} -loglevel fatal".format(
+            "ffpb -i {0} -to {1} -c copy {2} -loglevel fatal".format(
                 shlex.quote(url),
                 end,
                 shlex.quote(filename)
@@ -594,7 +594,7 @@ def download_hls_mp3(track, title): #download mp3 version of files
         start = arguments.get('--start')
         end = arguments.get('--end')
         os.system(
-            "ffmpeg -i {0} -ss {1} -to {2} -c copy {3} -loglevel fatal".format(
+            "ffpb -i {0} -ss {1} -to {2} -c copy {3} -loglevel fatal".format(
                 shlex.quote(url),
                 start,
                 end,
@@ -603,7 +603,7 @@ def download_hls_mp3(track, title): #download mp3 version of files
         )
     else:
         os.system(
-            "ffpb -i {0} -c copy {1}".format(
+            "ffpb -i {0} -c copy {1} -loglevel fatal".format(
                 shlex.quote(url),
                 shlex.quote(filename)
             )
