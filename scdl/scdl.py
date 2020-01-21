@@ -603,7 +603,7 @@ def download_hls_mp3(track, title): #download mp3 version of files
         )
     else:
         os.system(
-            "ffpb -i {0} -c copy {1} -loglevel fatal".format(
+            "ffpb -i {0} -c copy {1}".format(
                 shlex.quote(url),
                 shlex.quote(filename)
             )
